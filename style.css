@@ -1,0 +1,165 @@
+/* ---------------- Ancient Alexandria Theme ---------------- */
+
+body {
+    margin: 0;
+    font-family: "Georgia", serif;
+    background: #f5f1e6;
+    color: #3b2f2f;
+}
+
+.container {
+    width: 95%;
+    max-width: 950px;
+    margin: auto;
+    padding: 16px;
+}
+
+/* HEADER ---------------------------------------------------*/
+.site-header {
+    background: #d9c8a1;
+    border-bottom: 3px solid #b89b5e;
+    padding: 20px 0;
+}
+
+.site-header h1 {
+    margin: 0;
+    font-size: 28px;
+    color: #3b2f2f;
+    letter-spacing: 1px;
+}
+
+.site-header a {
+    text-decoration: none;
+    color: #3b2f2f;
+}
+
+nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+/* MAIN -----------------------------------------------------*/
+main.container {
+    background: #fffdf7;
+    border: 2px solid #d8c9a5;
+    border-radius: 6px;
+    margin-top: 20px;
+    padding: 24px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.1);
+}
+
+h2 {
+    border-bottom: 2px solid #c8b68e;
+    padding-bottom: 6px;
+}
+
+/* FORMS ----------------------------------------------------*/
+form {
+    display: block;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 14px;
+}
+
+label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 4px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+select {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ccb88c;
+    border-radius: 4px;
+    background: #fffdf8;
+}
+
+/* Buttons (FIXED) ------------------------------------------*/
+button,
+input[type="submit"] {
+    padding: 9px 16px;
+    border: none;
+    background: #b29762;
+    border: 2px solid #8c744a;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-block;
+    margin-top: 6px;
+}
+
+button:hover,
+input[type="submit"]:hover {
+    background: #8c744a;
+}
+
+/* TABLES ---------------------------------------------------*/
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+}
+
+.table th, .table td {
+    border: 1px solid #d8c9a5;
+    padding: 10px;
+    vertical-align: middle;
+}
+
+.table th {
+    background: #e8dcc0;
+}
+
+/* Make action buttons not overlap */
+.actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.pagination a {
+    padding: 8px 12px;
+    background: #efe5ce;
+    border: 1px solid #c8b68e;
+    border-radius: 4px;
+    text-decoration: none;
+    margin-right: 6px;
+    display: inline-block;
+}
+
+.pagination a.current {
+    background: #b29762;
+    color: white;
+}
+
+/* FOOTER ---------------------------------------------------*/
+.site-footer {
+    margin-top: 20px;
+    padding: 20px;
+    background: #d9c8a1;
+    border-top: 3px solid #b89b5e;
+    text-align: center;
+}
+
+/* ALERTS ---------------------------------------------------*/
+.alert {
+    background: #f6d6d6;
+    border-left: 5px solid #8c2a2a;
+    padding: 10px;
+}
+
+.success {
+    background: #d8f5d8;
+    border-left: 5px solid #2a7c2a;
+    padding: 10px;
+}
