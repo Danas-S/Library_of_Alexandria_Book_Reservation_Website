@@ -101,23 +101,23 @@ include 'header.php';
 <h2>Explore the Alexandria Archives</h2>
 
 <?php if ($flash_error): ?>
-    <div class="alert"><?php echo htmlspecialchars($flash_error); ?></div>
+    <div class="alert"><?php echo htmlspecialchars($flash_error, ENT_QUOTES, 'UTF-8'); ?></div>
 <?php endif; ?>
 
 <?php if ($flash_success): ?>
-    <div class="success"><?php echo htmlspecialchars($flash_success); ?></div>
+    <div class="success"><?php echo htmlspecialchars($flash_success, ENT_QUOTES, 'UTF-8'); ?></div>
 <?php endif; ?>
 
 <form method="get">
 
 <div class="form-group">
     <label>Title</label>
-    <input name="title" value="<?=htmlspecialchars($title)?>">
+    <input name="title" value="<?=htmlspecialchars($title, ENT_QUOTES, 'UTF-8')?>">
 </div>
 
 <div class="form-group">
     <label>Author</label>
-    <input name="author" value="<?=htmlspecialchars($author)?>">
+    <input name="author" value="<?=htmlspecialchars($author, ENT_QUOTES, 'UTF-8')?>">
 </div>
 
 <div class="form-group">
@@ -125,9 +125,9 @@ include 'header.php';
     <select name="category">
         <option value="0">All</option>
         <?php foreach($cats as $c): ?>
-            <option value="<?=$c['category_code']?>"
+            <option value="<?=(int)$c['category_code']?>"
                 <?php if ($category==$c['category_code']) echo "selected"; ?>>
-                <?=$c['category_description']?>
+                <?=htmlspecialchars((string)($c['category_description']), ENT_QUOTES, 'UTF-8')?>
             </option>
         <?php endforeach; ?>
     </select>
@@ -159,9 +159,9 @@ $busy = $row['reserved_isbn'] !== null;
 ?>
 
 <tr>
-<td><?=$isbn?></td>
-<td><strong><?=$row['title']?></strong><br><?=$row['author']?></td>
-<td><?=$catMap[$row['category_code']] ?? 'Unknown'?></td>
+<td><?=htmlspecialchars((string)($isbn), ENT_QUOTES, 'UTF-8')?></td>
+<td><strong><?=htmlspecialchars((string)($row['title']), ENT_QUOTES, 'UTF-8')?></strong><br><?=htmlspecialchars((string)($row['author']), ENT_QUOTES, 'UTF-8')?></td>
+<td><?=htmlspecialchars((string)($catMap[$row['category_code']] ?? 'Unknown'), ENT_QUOTES, 'UTF-8')?></td>
 
 <td>
 <span class="status <?=$busy ? 'reserved':'available'?>">
@@ -172,8 +172,8 @@ $busy = $row['reserved_isbn'] !== null;
 <td class="actions">
 <?php if(!$busy && isset($_SESSION['username'])): ?>
 <form method="post" action="reserve.php">
-<input type="hidden" name="isbn" value="<?=$isbn?>">
-<input type="hidden" name="return_url" value="<?=htmlspecialchars($_SERVER['REQUEST_URI'])?>">
+<input type="hidden" name="isbn" value="<?=htmlspecialchars((string)($isbn), ENT_QUOTES, 'UTF-8')?>">
+<input type="hidden" name="return_url" value="<?=htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES, 'UTF-8')?>">
 <button>Reserve</button>
 </form>
 <?php elseif(!$busy): ?>

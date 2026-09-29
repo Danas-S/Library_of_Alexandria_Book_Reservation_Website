@@ -86,7 +86,7 @@ include 'header.php';
 
 <?php if ($errors): ?>
     <div class="alert">
-        <?php echo implode("<br>", array_map("htmlspecialchars", $errors)); ?>
+        <?php echo implode("<br>", array_map(function ($error) { return htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); }, $errors)); ?>
     </div>
 <?php endif; ?>
 
@@ -95,25 +95,25 @@ include 'header.php';
     <div class="form-group">
         <label>Username</label>
         <input name="username"
-               value="<?php echo htmlspecialchars($_POST['username'] ?? '') ?>">
+               value="<?php echo htmlspecialchars(is_string($_POST['username'] ?? null) ? $_POST['username'] : '', ENT_QUOTES, 'UTF-8') ?>">
     </div>
 
     <div class="form-group">
         <label>Full Name</label>
         <input name="fullname"
-               value="<?php echo htmlspecialchars($_POST['fullname'] ?? '') ?>">
+               value="<?php echo htmlspecialchars(is_string($_POST['fullname'] ?? null) ? $_POST['fullname'] : '', ENT_QUOTES, 'UTF-8') ?>">
     </div>
 
     <div class="form-group">
         <label>Email</label>
         <input name="email" type="email"
-               value="<?php echo htmlspecialchars($_POST['email'] ?? '') ?>">
+               value="<?php echo htmlspecialchars(is_string($_POST['email'] ?? null) ? $_POST['email'] : '', ENT_QUOTES, 'UTF-8') ?>">
     </div>
 
     <div class="form-group">
         <label>Mobile (10 digits)</label>
         <input name="mobile"
-               value="<?php echo htmlspecialchars($_POST['mobile'] ?? '') ?>">
+               value="<?php echo htmlspecialchars(is_string($_POST['mobile'] ?? null) ? $_POST['mobile'] : '', ENT_QUOTES, 'UTF-8') ?>">
     </div>
 
     <div class="form-group">

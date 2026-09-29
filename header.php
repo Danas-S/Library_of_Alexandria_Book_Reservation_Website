@@ -57,7 +57,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
                 <?php if (!empty($_SESSION['username'])): ?>
                     <li><a href="my_reservations.php">My Reservations</a></li>
-                    <li>Logged in as <strong><?php echo htmlspecialchars($_SESSION['username']); ?></strong></li>
+                    <li>Logged in as <strong><?php echo htmlspecialchars($_SESSION['username'], ENT_QUOTES, 'UTF-8'); ?></strong></li>
                     <li><a href="logout.php">Logout</a></li>
                 <?php else: ?>
                     <li><a href="register.php">Register</a></li>

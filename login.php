@@ -92,7 +92,7 @@ include 'header.php';
 
     <?php if ($errors): ?>
         <div class="alert">
-            <?php echo implode('<br>', array_map('htmlspecialchars', $errors)); ?>
+            <?php echo implode('<br>', array_map(function ($error) { return htmlspecialchars($error, ENT_QUOTES, 'UTF-8'); }, $errors)); ?>
         </div>
     <?php endif; ?>
 
@@ -103,7 +103,7 @@ include 'header.php';
             <input name="username"
                    type="text"
                    placeholder="Enter your username"
-                   value="<?php echo htmlspecialchars($_POST['username'] ?? ''); ?>"
+                   value="<?php echo htmlspecialchars(is_string($_POST['username'] ?? null) ? $_POST['username'] : '', ENT_QUOTES, 'UTF-8'); ?>"
                    required>
         </div>
 

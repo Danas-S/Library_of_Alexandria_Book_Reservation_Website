@@ -58,10 +58,10 @@ include 'header.php';
 <h2>My Reservations</h2>
 
 <?php if ($flash_error): ?>
-    <div class="alert"><?php echo htmlspecialchars($flash_error); ?></div>
+    <div class="alert"><?php echo htmlspecialchars($flash_error, ENT_QUOTES, 'UTF-8'); ?></div>
 <?php endif; ?>
 <?php if ($flash_success): ?>
-    <div class="success"><?php echo htmlspecialchars($flash_success); ?></div>
+    <div class="success"><?php echo htmlspecialchars($flash_success, ENT_QUOTES, 'UTF-8'); ?></div>
 <?php endif; ?>
 
 <?php if (empty($reservations)): ?>
@@ -79,12 +79,12 @@ include 'header.php';
         <tbody>
         <?php foreach ($reservations as $r): ?>
             <tr>
-                <td><?php echo htmlspecialchars($r['isbn']); ?></td>
+                <td><?php echo htmlspecialchars($r['isbn'], ENT_QUOTES, 'UTF-8'); ?></td>
                 <td>
-                    <strong><?php echo htmlspecialchars($r['title']); ?></strong><br>
-                    <span><?php echo htmlspecialchars($r['author']); ?></span>
+                    <strong><?php echo htmlspecialchars($r['title'], ENT_QUOTES, 'UTF-8'); ?></strong><br>
+                    <span><?php echo htmlspecialchars($r['author'], ENT_QUOTES, 'UTF-8'); ?></span>
                 </td>
-                <td><?php echo htmlspecialchars($r['date']); ?></td>
+                <td><?php echo htmlspecialchars($r['date'], ENT_QUOTES, 'UTF-8'); ?></td>
                 <td>
                     <form method="post" style="display:inline;" onsubmit="return confirm('Remove this reservation?');">
                         <input type="hidden" name="remove_id" value="<?php echo (int)$r['id']; ?>">
