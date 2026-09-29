@@ -1,16 +1,18 @@
 <?php
 require_once 'db_config.php';
-session_start();
+require_once 'functions.php';
 
 $errors = [];
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = trim($_POST['username'] ?? '');
-    $fullname = trim($_POST['fullname'] ?? '');
-    $email    = trim($_POST['email'] ?? '');
-    $mobile   = trim($_POST['mobile'] ?? '');
-    $password = $_POST['password'] ?? '';
-    $confirm  = $_POST['password_confirm'] ?? '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !valid_csrf_token()) {
+    $errors[] = "Your form expired. Please try again.";
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $username = trim(input_string($_POST, 'username'));
+    $fullname = trim(input_string($_POST, 'fullname'));
+    $email    = trim(input_string($_POST, 'email'));
+    $mobile   = trim(input_string($_POST, 'mobile'));
+    $password = input_string($_POST, 'password');
+    $confirm  = input_string($_POST, 'password_confirm');
 
     /* Validation */
     if ($username === '' || $fullname === '' || $email === '' ||
@@ -91,6 +93,7 @@ include 'header.php';
 <?php endif; ?>
 
 <form method="post" action="register.php" novalidate>
+        <input type="hidden" name="csrf_token" value="<?=htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8')?>">
 
     <div class="form-group">
         <label>Username</label>

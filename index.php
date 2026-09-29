@@ -1,6 +1,6 @@
 <?php
 require_once 'db_config.php';
-session_start();
+require_once 'functions.php';
 
 $mysqli = db_connect();
 
@@ -17,10 +17,11 @@ while ($row = $cq->fetch_assoc()) {
 }
 
 /* Search inputs */
-$title    = is_string($_GET['title'] ?? null) ? trim($_GET['title']) : '';
-$author   = is_string($_GET['author'] ?? null) ? trim($_GET['author']) : '';
-$category = filter_var($_GET['category'] ?? 0, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?: 0;
-$hideReserved = ($_GET['hide_reserved'] ?? '') === '1';
+$searchParams = search_parameters($_GET);
+$title = $searchParams['title'];
+$author = $searchParams['author'];
+$category = $searchParams['category'];
+$hideReserved = $searchParams['hide_reserved'] === '1';
 
 /* Only accept categories that exist in the dropdown. */
 $catMap = [];
@@ -29,7 +30,7 @@ foreach ($cats as $c) {
 }
 if (!array_key_exists($category, $catMap)) $category = 0;
 
-$page = filter_var($_GET['page'] ?? 1, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) ?: 1;
+$page = $searchParams['page'];
 $limit = 5;
 
 /* WHERE building */
@@ -71,13 +72,9 @@ $pages = max(1, (int)ceil($total / $limit));
 $page = min($page, $pages);
 $offset = ($page - 1) * $limit;
 
-/* Keep the same search when moving between pages. */
-$searchParams = [
-    'title' => $title,
-    'author' => $author,
-    'category' => $category
-];
-if ($hideReserved) $searchParams['hide_reserved'] = 1;
+/* Keep the validated search and current page in links and reserve forms. */
+$searchParams['category'] = $category;
+$searchParams['page'] = $page;
 
 /* Fetch records */
 $sql = "SELECT b.isbn, b.title, b.author, b.category_code, rb.isbn AS reserved_isbn
@@ -173,7 +170,10 @@ $busy = $row['reserved_isbn'] !== null;
 <?php if(!$busy && isset($_SESSION['username'])): ?>
 <form method="post" action="reserve.php">
 <input type="hidden" name="isbn" value="<?=htmlspecialchars((string)($isbn), ENT_QUOTES, 'UTF-8')?>">
-<input type="hidden" name="return_url" value="<?=htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES, 'UTF-8')?>">
+<input type="hidden" name="csrf_token" value="<?=htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8')?>">
+<?php foreach ($searchParams as $key => $value): ?>
+<input type="hidden" name="<?=htmlspecialchars($key, ENT_QUOTES, 'UTF-8')?>" value="<?=htmlspecialchars((string)$value, ENT_QUOTES, 'UTF-8')?>">
+<?php endforeach; ?>
 <button>Reserve</button>
 </form>
 <?php elseif(!$busy): ?>

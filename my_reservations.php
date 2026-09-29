@@ -1,8 +1,8 @@
 <?php
 require_once 'db_config.php';
-session_start();
+require_once 'functions.php';
 
-if (empty($_SESSION['username'])) {
+if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit;
 }
@@ -16,7 +16,9 @@ $flash_success = $_SESSION['flash_success'] ?? '';
 unset($_SESSION['flash_error'], $_SESSION['flash_success']);
 
 // Handle removal
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_id'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !valid_csrf_token()) {
+    $flash_error = "Your form expired. Please try again.";
+} elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_id'])) {
     $id = (int)$_POST['remove_id'];
     $del = $mysqli->prepare("DELETE FROM reserved_books WHERE id = ? AND username = ?");
     $del->bind_param('is', $id, $username);
@@ -87,6 +89,7 @@ include 'header.php';
                 <td><?php echo htmlspecialchars($r['date'], ENT_QUOTES, 'UTF-8'); ?></td>
                 <td>
                     <form method="post" style="display:inline;" onsubmit="return confirm('Remove this reservation?');">
+                        <input type="hidden" name="csrf_token" value="<?=htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8')?>">
                         <input type="hidden" name="remove_id" value="<?php echo (int)$r['id']; ?>">
                         <input type="submit" value="Remove">
                     </form>

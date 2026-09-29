@@ -80,7 +80,7 @@
         </a>
 
 
-        <?php if (empty($_SESSION['username'])): ?>
+        <?php if (!isset($_SESSION['username'])): ?>
             <a href="register.php">
                 <button>Create an Account</button>
             </a>

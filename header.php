@@ -1,7 +1,5 @@
 <?php
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+require_once 'functions.php';
 ?>
 <!doctype html>
 <html lang="en">
@@ -55,10 +53,15 @@ if (session_status() === PHP_SESSION_NONE) {
                 <!-- Search Link -->
                 <li><a href="index.php">Search</a></li>
 
-                <?php if (!empty($_SESSION['username'])): ?>
+                <?php if (isset($_SESSION['username'])): ?>
                     <li><a href="my_reservations.php">My Reservations</a></li>
                     <li>Logged in as <strong><?php echo htmlspecialchars($_SESSION['username'], ENT_QUOTES, 'UTF-8'); ?></strong></li>
-                    <li><a href="logout.php">Logout</a></li>
+                    <li>
+                        <form method="post" action="logout.php" class="logout-form">
+                            <input type="hidden" name="csrf_token" value="<?=htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8')?>">
+                            <button class="logout-button" type="submit">Logout</button>
+                        </form>
+                    </li>
                 <?php else: ?>
                     <li><a href="register.php">Register</a></li>
                     <li><a href="login.php">Login</a></li>
