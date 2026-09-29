@@ -107,7 +107,7 @@ Anonymous visitors can search and see availability, but reservation actions and 
 | `db_config.sample.php` | Example for an optional, untracked local configuration |
 | `library.sql` | Repeatable development database reset and seed data |
 | `style.css` | Alexandria colours, typography, forms and tables |
-| `C24344923_WebDCA.pdf` | Original design report and screenshots, preserved unchanged |
+| `C24344923_WebDCA.pdf` | Original design report and screenshots |
 | `REVIEW.md` | Requirement checklist, report discrepancies and verification results |
 
 ## Security
