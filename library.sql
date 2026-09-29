@@ -1,6 +1,15 @@
 CREATE DATABASE IF NOT EXISTS librarydb CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE librarydb;
 
+SET NAMES utf8mb4;
+
+-- Development reset: importing again removes existing accounts and reservations.
+-- Drop children before the tables they reference.
+DROP TABLE IF EXISTS reserved_books;
+DROP TABLE IF EXISTS books;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS users;
+
 CREATE TABLE users (
   username VARCHAR(50) PRIMARY KEY,
   fullname VARCHAR(100),
@@ -8,12 +17,12 @@ CREATE TABLE users (
   mobile VARCHAR(10),
   password_hash VARCHAR(255),
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE categories (
   category_code INT PRIMARY KEY AUTO_INCREMENT,
   category_description VARCHAR(100)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE books (
   isbn VARCHAR(20) PRIMARY KEY,
@@ -23,7 +32,7 @@ CREATE TABLE books (
   publisher VARCHAR(200),
   year_published YEAR,
   FOREIGN KEY (category_code) REFERENCES categories(category_code)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE reserved_books (
   id INT PRIMARY KEY AUTO_INCREMENT,
@@ -33,7 +42,7 @@ CREATE TABLE reserved_books (
   UNIQUE (isbn),
   FOREIGN KEY (username) REFERENCES users(username),
   FOREIGN KEY (isbn) REFERENCES books(isbn)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO categories (category_description) VALUES
 ('Fiction'),('Non-Fiction'),('Business'),
