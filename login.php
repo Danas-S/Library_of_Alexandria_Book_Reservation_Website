@@ -12,6 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !valid_csrf_token()) {
 
     if ($username === '' || $password === '') {
         $errors[] = "Both username and password are required.";
+    } elseif (strlen($password) > 72 || strpos($password, "\0") !== false || mb_strlen($username, 'UTF-8') > 50) {
+        $errors[] = "Invalid username or password.";
     } else {
         $mysqli = db_connect();
         $stmt = $mysqli->prepare("SELECT username, password_hash FROM users WHERE username = ?");
@@ -23,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !valid_csrf_token()) {
             $stmt->bind_result($storedUsername, $hash);
             $stmt->fetch();
 
-            if (password_verify($password, $hash)) {
+            if (password_verify($password, (string)$hash)) {
                 session_regenerate_id(true);
                 $_SESSION['username'] = $storedUsername;
                 unset($_SESSION['csrf_token']);
@@ -106,17 +108,17 @@ include 'header.php';
         <input type="hidden" name="csrf_token" value="<?=htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8')?>">
 
         <div class="form-group">
-            <label>Username</label>
-            <input name="username"
+            <label for="username">Username</label>
+            <input id="username" name="username"
                    type="text"
                    placeholder="Enter your username"
-                   value="<?php echo htmlspecialchars(is_string($_POST['username'] ?? null) ? $_POST['username'] : '', ENT_QUOTES, 'UTF-8'); ?>"
+                   value="<?php echo htmlspecialchars(input_string($_POST, 'username'), ENT_QUOTES, 'UTF-8'); ?>"
                    required>
         </div>
 
         <div class="form-group">
-            <label>Password</label>
-            <input name="password"
+            <label for="password">Password</label>
+            <input id="password" name="password"
                    type="password"
                    placeholder="Enter your password"
                    required>

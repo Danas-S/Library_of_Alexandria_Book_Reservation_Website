@@ -108,18 +108,18 @@ include 'header.php';
 <form method="get">
 
 <div class="form-group">
-    <label>Title</label>
-    <input name="title" value="<?=htmlspecialchars($title, ENT_QUOTES, 'UTF-8')?>">
+    <label for="title">Title</label>
+    <input type="text" id="title" name="title" value="<?=htmlspecialchars($title, ENT_QUOTES, 'UTF-8')?>">
 </div>
 
 <div class="form-group">
-    <label>Author</label>
-    <input name="author" value="<?=htmlspecialchars($author, ENT_QUOTES, 'UTF-8')?>">
+    <label for="author">Author</label>
+    <input type="text" id="author" name="author" value="<?=htmlspecialchars($author, ENT_QUOTES, 'UTF-8')?>">
 </div>
 
 <div class="form-group">
-    <label>Category</label>
-    <select name="category">
+    <label for="category">Category</label>
+    <select id="category" name="category">
         <option value="0">All</option>
         <?php foreach($cats as $c): ?>
             <option value="<?=(int)$c['category_code']?>"
@@ -148,6 +148,10 @@ include 'header.php';
 <th>Status</th>
 <th>Action</th>
 </tr>
+
+<?php if ($result->num_rows === 0): ?>
+<tr><td colspan="5">No books match your search.</td></tr>
+<?php endif; ?>
 
 <?php while($row = $result->fetch_assoc()): ?>
 <?php

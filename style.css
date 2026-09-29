@@ -1,5 +1,7 @@
 /* ---------------- Ancient Alexandria Theme ---------------- */
 
+* { box-sizing: border-box; }
+
 body {
     margin: 0;
     font-family: "Georgia", serif;
@@ -44,6 +46,7 @@ nav ul {
 
 /* MAIN -----------------------------------------------------*/
 main.container {
+    overflow-x: auto;
     background: #fffdf7;
     border: 2px solid #d8c9a5;
     border-radius: 6px;
@@ -86,6 +89,7 @@ select {
 
 /* Buttons (FIXED) ------------------------------------------*/
 button,
+.button-link,
 input[type="submit"] {
     padding: 9px 16px;
     border: none;
@@ -99,6 +103,7 @@ input[type="submit"] {
 }
 
 button:hover,
+.button-link:hover,
 input[type="submit"]:hover {
     background: #8c744a;
 }

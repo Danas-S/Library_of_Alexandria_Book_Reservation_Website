@@ -97,12 +97,12 @@ include 'header.php';
         <tbody>
         <?php foreach ($reservations as $r): ?>
             <tr>
-                <td><?php echo htmlspecialchars($r['isbn'], ENT_QUOTES, 'UTF-8'); ?></td>
+                <td><?php echo htmlspecialchars((string)$r['isbn'], ENT_QUOTES, 'UTF-8'); ?></td>
                 <td>
-                    <strong><?php echo htmlspecialchars($r['title'], ENT_QUOTES, 'UTF-8'); ?></strong><br>
-                    <span><?php echo htmlspecialchars($r['author'], ENT_QUOTES, 'UTF-8'); ?></span>
+                    <strong><?php echo htmlspecialchars((string)$r['title'], ENT_QUOTES, 'UTF-8'); ?></strong><br>
+                    <span><?php echo htmlspecialchars((string)$r['author'], ENT_QUOTES, 'UTF-8'); ?></span>
                 </td>
-                <td><?php echo htmlspecialchars($r['date'], ENT_QUOTES, 'UTF-8'); ?></td>
+                <td><?php echo htmlspecialchars((string)$r['date'], ENT_QUOTES, 'UTF-8'); ?></td>
                 <td>
                     <form method="post" style="display:inline;" onsubmit="return confirm('Remove this reservation?');">
                         <input type="hidden" name="csrf_token" value="<?=htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8')?>">

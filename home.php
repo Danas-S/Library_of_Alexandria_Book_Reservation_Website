@@ -75,22 +75,14 @@
     </p>
 
     <div class="cta-buttons">
-        <a href="index.php">
-            <button>Search the Library</button>
-        </a>
+        <a class="button-link" href="index.php">Search the Library</a>
 
 
         <?php if (!isset($_SESSION['username'])): ?>
-            <a href="register.php">
-                <button>Create an Account</button>
-            </a>
-            <a href="login.php">
-                <button>Login</button>
-            </a>
+            <a class="button-link" href="register.php">Create an Account</a>
+            <a class="button-link" href="login.php">Login</a>
         <?php else: ?>
-            <a href="my_reservations.php">
-                <button>My Reservations</button>
-            </a>
+            <a class="button-link" href="my_reservations.php">My Reservations</a>
         <?php endif; ?>
     </div>
 </div>
