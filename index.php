@@ -28,14 +28,13 @@ while ($row = $cq->fetch_assoc()) {
 }
 
 /* Search inputs */
-$title    = trim($_GET['title']   ?? '');
-$author   = trim($_GET['author']  ?? '');
-$category = $_GET['category'] ?? '0';
-$hideReserved = isset($_GET['hide_reserved']); 
+$title    = is_string($_GET['title'] ?? null) ? trim($_GET['title']) : '';
+$author   = is_string($_GET['author'] ?? null) ? trim($_GET['author']) : '';
+$category = is_string($_GET['category'] ?? null) ? $_GET['category'] : '0';
+$hideReserved = ($_GET['hide_reserved'] ?? '') === '1';
 
-$page  = max(1, (int)($_GET['page'] ?? 1));
+$page = filter_var($_GET['page'] ?? 1, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) ?: 1;
 $limit = 5;
-$offset = ($page - 1) * $limit;
 
 /* WHERE building */
 $where  = [];
@@ -71,7 +70,18 @@ $count->bind_result($total);
 $count->fetch();
 $count->close();
 
-$pages = max(1, ceil($total / $limit));
+$pages = max(1, (int)ceil($total / $limit));
+$page = min($page, $pages);
+$offset = ($page - 1) * $limit;
+
+/* Keep the same search when moving between pages. */
+$searchParams = [
+    'from_home' => 1,
+    'title' => $title,
+    'author' => $author,
+    'category' => $category
+];
+if ($hideReserved) $searchParams['hide_reserved'] = 1;
 
 /* Fetch records */
 $sql = "SELECT isbn,title,author,category_code
@@ -199,7 +209,7 @@ $busy = $resCount > 0;
 <!-- PAGINATION -->
 <div class="pagination">
 <?php for($p=1;$p<=$pages;$p++): ?>
-<a href="?from_home=1&page=<?=$p?>" class="<?=$p==$page?'current':''?>">
+<a href="?<?=htmlspecialchars(http_build_query(array_merge($searchParams, ['page' => $p])), ENT_QUOTES, 'UTF-8')?>" class="<?=$p==$page?'current':''?>">
 <?=$p?>
 </a>
 <?php endfor; ?>
