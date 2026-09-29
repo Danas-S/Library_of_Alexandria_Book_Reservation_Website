@@ -53,7 +53,7 @@ if (session_status() === PHP_SESSION_NONE) {
                 <li><a href="home.php">Home</a></li>
 
                 <!-- Search Link -->
-                <li><a href="index.php?from_home=1">Search</a></li>
+                <li><a href="index.php">Search</a></li>
 
                 <?php if (!empty($_SESSION['username'])): ?>
                     <li><a href="my_reservations.php">My Reservations</a></li>

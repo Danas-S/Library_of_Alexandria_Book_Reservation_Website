@@ -75,7 +75,7 @@
     </p>
 
     <div class="cta-buttons">
-        <a href="index.php?from_home=1">
+        <a href="index.php">
             <button>Search the Library</button>
         </a>
 

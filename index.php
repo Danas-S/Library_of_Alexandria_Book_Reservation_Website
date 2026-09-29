@@ -1,15 +1,4 @@
 <?php
-// -------------------------------------------------
-// HOME ROUTING LOGIC
-// If the site is opened directly with no parameters
-// send user to HOME page.
-// -------------------------------------------------
-if (!isset($_GET['from_home'])) {
-    header("Location: home.php");
-    exit;
-}
-
-// Continue with library/search page below
 require_once 'db_config.php';
 session_start();
 
@@ -76,7 +65,6 @@ $offset = ($page - 1) * $limit;
 
 /* Keep the same search when moving between pages. */
 $searchParams = [
-    'from_home' => 1,
     'title' => $title,
     'author' => $author,
     'category' => $category
@@ -119,9 +107,6 @@ include 'header.php';
 <?php endif; ?>
 
 <form method="get">
-
-<!-- ✅ KEEP SPECIAL PARAMETER SO HOME REDIRECT IS SKIPPED -->
-<input type="hidden" name="from_home" value="1">
 
 <div class="form-group">
     <label>Title</label>
