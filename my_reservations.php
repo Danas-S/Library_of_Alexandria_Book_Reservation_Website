@@ -10,25 +10,41 @@ if (!isset($_SESSION['username'])) {
 $mysqli = db_connect();
 $username = $_SESSION['username'];
 
-// Flash from remove
+// Handle removal, then redirect so refreshing cannot repeat the POST.
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    unset($_SESSION['flash_error'], $_SESSION['flash_success']);
+    $id = filter_var($_POST['remove_id'] ?? null, FILTER_VALIDATE_INT,
+        ['options' => ['min_range' => 1]]);
+    if (!valid_csrf_token()) {
+        $_SESSION['flash_error'] = "Your form expired. Please try again.";
+    } elseif (!$id) {
+        $_SESSION['flash_error'] = "Please select a valid reservation.";
+    } else {
+        try {
+            $del = $mysqli->prepare("DELETE FROM reserved_books WHERE id = ? AND username = ?");
+            $del->bind_param('is', $id, $username);
+            $del->execute();
+            if ($del->affected_rows === 1) {
+                $_SESSION['flash_success'] = "Reservation removed.";
+            } else {
+                $_SESSION['flash_error'] = "Reservation not found in your account.";
+            }
+        } catch (mysqli_sql_exception $e) {
+            error_log('Reservation removal failed: ' . $e->getMessage());
+            $_SESSION['flash_error'] = "Could not remove reservation. Please try again.";
+        } finally {
+            if (isset($del)) $del->close();
+        }
+    }
+    $mysqli->close();
+    header("Location: my_reservations.php", true, 303);
+    exit;
+}
+
+// Display each result once, on the GET after removal.
 $flash_error   = $_SESSION['flash_error']   ?? '';
 $flash_success = $_SESSION['flash_success'] ?? '';
 unset($_SESSION['flash_error'], $_SESSION['flash_success']);
-
-// Handle removal
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && !valid_csrf_token()) {
-    $flash_error = "Your form expired. Please try again.";
-} elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_id'])) {
-    $id = (int)$_POST['remove_id'];
-    $del = $mysqli->prepare("DELETE FROM reserved_books WHERE id = ? AND username = ?");
-    $del->bind_param('is', $id, $username);
-    if ($del->execute()) {
-        $flash_success = "Reservation removed.";
-    } else {
-        $flash_error = "Could not remove reservation.";
-    }
-    $del->close();
-}
 
 // Fetch reservations
 $stmt = $mysqli->prepare("
