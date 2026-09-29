@@ -19,8 +19,15 @@ while ($row = $cq->fetch_assoc()) {
 /* Search inputs */
 $title    = is_string($_GET['title'] ?? null) ? trim($_GET['title']) : '';
 $author   = is_string($_GET['author'] ?? null) ? trim($_GET['author']) : '';
-$category = is_string($_GET['category'] ?? null) ? $_GET['category'] : '0';
+$category = filter_var($_GET['category'] ?? 0, FILTER_VALIDATE_INT, ['options' => ['min_range' => 0]]) ?: 0;
 $hideReserved = ($_GET['hide_reserved'] ?? '') === '1';
+
+/* Only accept categories that exist in the dropdown. */
+$catMap = [];
+foreach ($cats as $c) {
+    $catMap[$c['category_code']] = $c['category_description'];
+}
+if (!array_key_exists($category, $catMap)) $category = 0;
 
 $page = filter_var($_GET['page'] ?? 1, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]) ?: 1;
 $limit = 5;
@@ -31,28 +38,29 @@ $params = [];
 $types  = '';
 
 if ($title !== '') {
-    $where[]  = "title LIKE ?";
+    $where[]  = "b.title LIKE ?";
     $params[] = "%$title%";
     $types   .= 's';
 }
 if ($author !== '') {
-    $where[]  = "author LIKE ?";
+    $where[]  = "b.author LIKE ?";
     $params[] = "%$author%";
     $types   .= 's';
 }
-if ($category !== '0') {
-    $where[]  = "category_code = ?";
-    $params[] = (int)$category;
+if ($category !== 0) {
+    $where[]  = "b.category_code = ?";
+    $params[] = $category;
     $types   .= 'i';
 }
 if ($hideReserved) {
-    $where[] = "isbn NOT IN (SELECT isbn FROM reserved_books)";
+    $where[] = "rb.isbn IS NULL";
 }
 
 $whereSQL = $where ? "WHERE " . implode(" AND ", $where) : "";
 
 /* Count rows */
-$count = $mysqli->prepare("SELECT COUNT(*) FROM books $whereSQL");
+$fromSQL = "FROM books b LEFT JOIN reserved_books rb ON rb.isbn = b.isbn";
+$count = $mysqli->prepare("SELECT COUNT(*) $fromSQL $whereSQL");
 if ($types) $count->bind_param($types, ...$params);
 $count->execute();
 $count->bind_result($total);
@@ -72,10 +80,10 @@ $searchParams = [
 if ($hideReserved) $searchParams['hide_reserved'] = 1;
 
 /* Fetch records */
-$sql = "SELECT isbn,title,author,category_code
-        FROM books
+$sql = "SELECT b.isbn, b.title, b.author, b.category_code, rb.isbn AS reserved_isbn
+        $fromSQL
         $whereSQL
-        ORDER BY title
+        ORDER BY b.title, b.isbn
         LIMIT ? OFFSET ?";
 
 $stmt = $mysqli->prepare($sql);
@@ -84,12 +92,6 @@ $bindParams = array_merge($params, [$limit,$offset]);
 $stmt->bind_param($bindTypes, ...$bindParams);
 $stmt->execute();
 $result = $stmt->get_result();
-
-/* Category Map */
-$catMap = [];
-foreach ($cats as $c) {
-    $catMap[$c['category_code']] = $c['category_description'];
-}
 
 include 'header.php';
 ?>
@@ -153,19 +155,13 @@ include 'header.php';
 <?php while($row = $result->fetch_assoc()): ?>
 <?php
 $isbn = $row['isbn'];
-$r = $mysqli->prepare("SELECT COUNT(*) FROM reserved_books WHERE isbn=?");
-$r->bind_param("s",$isbn);
-$r->execute();
-$r->bind_result($resCount);
-$r->fetch();
-$r->close();
-$busy = $resCount > 0;
+$busy = $row['reserved_isbn'] !== null;
 ?>
 
 <tr>
 <td><?=$isbn?></td>
 <td><strong><?=$row['title']?></strong><br><?=$row['author']?></td>
-<td><?=$catMap[$row['category_code']]?></td>
+<td><?=$catMap[$row['category_code']] ?? 'Unknown'?></td>
 
 <td>
 <span class="status <?=$busy ? 'reserved':'available'?>">
