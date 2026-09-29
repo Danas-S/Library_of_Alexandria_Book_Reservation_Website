@@ -108,7 +108,6 @@ Anonymous visitors can search and see availability, but reservation actions and 
 | `library.sql` | Repeatable development database reset and seed data |
 | `style.css` | Alexandria colours, typography, forms and tables |
 | `C24344923_WebDCA.pdf` | Original design report and screenshots |
-| `REVIEW.md` | Requirement checklist, report discrepancies and verification results |
 
 ## Security
 
@@ -122,9 +121,3 @@ Anonymous visitors can search and see availability, but reservation actions and 
 - Database constraints enforce valid references and one active reservation per book.
 
 The root/blank-password defaults are for local XAMPP development. For an Internet deployment, use HTTPS, a dedicated database account and server configuration appropriate for that environment. This project does not implement password recovery or login rate limiting.
-
-## Notes and Verification
-
-The repository contains the student's report, but no separate lecturer assignment brief, lab instructions or marking scheme. Complete compliance with those unavailable documents cannot be certified. The report's code screenshots predate the repairs; see [REVIEW.md](REVIEW.md) for specific corrections and manual checks.
-
-The review executed 369 HTTP assertions against an isolated database, plus SQL import, constraint/concurrency and error-handling checks. Browser visual checks and Apache integration are **Not runtime-tested**. The test instance and its temporary configuration were removed from the project's running setup after testing; no test accounts or extra books were added to `library.sql`.
